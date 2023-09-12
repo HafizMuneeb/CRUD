@@ -1,20 +1,29 @@
 import React, { useState } from 'react'
 import TextField from '../../components/TextField'
 import Button from '../../components/Button'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { editUser } from './userSlice'
 
-const AddUser = () => {
-
+const EditUser = () => {
+    const params = useParams();
+    const dispatch = useDispatch();
+    const users = useSelector(store => store.users);
     const navigate = useNavigate();
-
+    const existingUser = users.filter(user => user.id === params.id);
+    const { name, email } = existingUser[0];
     const [values, setValues] = useState({
-        name: '',
-        email: ''
+        name,
+        email
     });
 
     const handleEditUser = () => {
         setValues({ name: '', email: '' });
-        console.log(values);
+        dispatch(editUser({
+            id: params.id,
+            name: values.name,
+            email: values.email
+        }));
         navigate('/');
     }
   return (
@@ -37,4 +46,4 @@ const AddUser = () => {
   )
 }
 
-export default AddUser
+export default EditUser
